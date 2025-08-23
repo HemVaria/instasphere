@@ -1,30 +1,68 @@
-# Fork of instasphere
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+📚 Instasphere Bot Knowledge Base
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/gshemff-gmailcoms-projects/v0-fork-of-instasphere)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/XGVAZNqKT3K)
+App Name: Instasphere
+Type: Modern Social Media Platform
+Core Idea: A next-gen social app that blends community vibes, personal expression, and smart features for content discovery.
 
-## Overview
+🌟 Key Features
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+User Profiles: Personalized spaces with bio, posts, followers/following.
 
-## Deployment
+Post System: Share text, images, videos. Like, comment, and interact.
 
-Your project is live at:
+Feed Algorithm: Smart content recommendations (mix of following + trending).
 
-**[https://vercel.com/gshemff-gmailcoms-projects/v0-fork-of-instasphere](https://vercel.com/gshemff-gmailcoms-projects/v0-fork-of-instasphere)**
+Stories & Reels: Time-limited visual content for quick updates.
 
-## Build your app
+Messaging: Real-time chat with individuals and groups.
 
-Continue building your app on:
+Notifications: Alerts for likes, comments, DMs, follows.
 
-**[https://v0.dev/chat/projects/XGVAZNqKT3K](https://v0.dev/chat/projects/XGVAZNqKT3K)**
+Search & Explore: Discover trending hashtags, people, and content.
 
-## How It Works
+Privacy & Security: Strong account settings, report/block features.
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+🎯 Project Goals
+
+Build a clean, modern UI that feels familiar but fresh.
+
+Prioritize engagement through interactive features.
+
+Ensure scalability with cloud backend.
+
+Maintain security & privacy at the core.
+
+🛠 Tech Stack (example knowledge)
+
+Frontend: React / Next.js (fast, modular, responsive)
+
+Backend: Node.js + Express
+
+Database: MongoDB / Firebase
+
+Auth: JWT-based secure login
+
+Hosting: Vercel / AWS
+
+📌 Use Cases
+
+Sharing daily moments (like Insta but sleeker).
+
+Community building around interests.
+
+Content creators finding an audience.
+
+Messaging & staying connected with friends.
+
+🤖 Bot Personality Guidelines
+
+When answering about Instasphere, the bot should:
+
+Emphasize community + creativity vibes.
+
+Highlight security & privacy as a trust factor.
+
+Always frame Instasphere as a modern, user-friendly, and fun platform.
+
+Avoid comparing directly to competitors (e.g., Instagram, TikTok) unless user asks.
