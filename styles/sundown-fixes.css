@@ -1,0 +1,199 @@
+/* Sundown fixes: force tokens everywhere and tint chat canvas */
+
+html, body, #__next, .app, .layout, .page, .content, .main, .chat {
+  background: var(--bg-0) !important;
+  color: var(--text-1);
+}
+
+.appbar, .composer, .panel, .card {
+  background: var(--bg-1) !important;
+  border-color: var(--border) !important;
+}
+
+input, textarea {
+  background: color-mix(in oklab, var(--bg-2), white 2%) !important;
+  color: var(--text-1) !important;
+  border: 1px solid transparent !important;
+}
+
+/* Chat background tint */
+.chat {
+  background:
+    radial-gradient(900px 320px at 85% -120px, color-mix(in oklab, var(--brandPrimary), black 96%), transparent 60%),
+    radial-gradient(700px 260px at 10% 110%, color-mix(in oklab, var(--brandPrimary), black 97%), transparent 60%),
+    linear-gradient(180deg, var(--bg-0) 0%, color-mix(in oklab, var(--bg-0), white 3%) 100%);
+}
+
+/* Chatling: safe-zone + position */
+:root { --floating-gap: 24px; --floating-size: 64px; }
+.chat { padding-bottom: calc(var(--floating-size) + var(--floating-gap) + 16px); }
+[id*="chatling"], [class*="chatling"], iframe[src*="chatling"] {
+  position: fixed !important; right: var(--floating-gap) !important; bottom: var(--floating-gap) !important; z-index: 60 !important;
+}
+
+/* Bottom-right Chatling; allow overlap (no safe zone) */
+[id*="chatling"], [class*="chatling"], iframe[src*="chatling"] {
+  right: 16px !important;
+  left: auto !important;
+  bottom: 16px !important;
+}
+
+/* DM Popover styles */
+.dm-portal {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+}
+
+.dm-popover {
+  pointer-events: auto;
+  position: absolute;
+  top: 68px;
+  right: 16px;
+  width: 420px;
+  max-height: 60vh;
+  overflow: auto;
+  background: color-mix(in oklab, var(--bg-1), white 2%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-1);
+}
+
+.dm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 12px;
+}
+
+.dm-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dm-search input {
+  flex: 1;
+  background: var(--bg-2);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--text-1);
+  padding: 8px 10px;
+}
+
+.dm-error {
+  background: #ed4245;
+  color: white;
+  padding: 8px 12px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dm-list {
+  padding: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.dm-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.dm-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--bg-2), white 3%);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  text-align: left;
+  width: 100%;
+  margin-bottom: 8px;
+  transition: all 0.15s ease;
+}
+
+.dm-item:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--brandPrimary), black 90%);
+  border-color: color-mix(in oklab, var(--brandPrimary), black 70%);
+  color: var(--text-1);
+}
+
+.dm-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* If you previously added padding-bottom safety, remove it */
+.chat { padding-bottom: 0 !important; }
+
+/* Compact composer variant */
+.composer {
+  background: var(--bg-1) !important;
+  border-top: 1px solid var(--border) !important;
+  padding: 6px 8px !important;
+  border-radius: 12px !important;
+}
+.msg-group .btn-icon, .msg-group button[title="Delete message"], .msg-group svg {
+  color: #fff !important;
+  stroke: #fff !important;
+}
+.msg-group:hover .h-6.w-6 { opacity: 1 !important; }
+
+
+.composer textarea,
+.composer input[type="text"],
+.composer input:not([type]) {
+  min-height: 36px !important;
+  max-height: 120px;
+  padding: 6px 10px !important;
+  font-size: 14px !important;
+  line-height: 1.25;
+  background: color-mix(in oklab, var(--bg-2), white 3%) !important;
+  border: 1px solid transparent !important;
+  border-radius: 10px !important;
+  color: var(--text-1) !important;
+}
+
+/* Smaller buttons and tighter spacing */
+.composer .btn-icon { width: 32px; height: 32px; padding: 6px; border-radius: 10px; color: var(--text-2); }
+.composer .btn-icon:hover { background: color-mix(in oklab, var(--bg-2), white 4%); color: var(--text-1); }
+
+.composer .btn-send {
+  width: 36px !important; height: 36px !important;
+  border-radius: 999px !important;
+  background: var(--brandGlow) !important; color: #fff !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,.35);
+}
+
+/* Remove the left “+” button (no DOM change needed) */
+.composer .btn-plus,
+.composer [aria-label="Attach"],
+.composer [title="Attach"] {
+  display: none !important;
+}
+
+/* Keep emoji button subtle */
+.composer .btn-emoji { opacity: .9; }
+.composer .btn-emoji:hover { opacity: 1; }
+
+.composer input::placeholder,
+.composer textarea::placeholder { color: var(--text-3); }
+
+

@@ -1,0 +1,80 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+.next-cache/
+
+# Production
+build/
+
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.iml
+
+# Env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# Misc
+coverage/
+.vercel/
+.turbo/
+.cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Lockfiles (optional; keep if you use only one)
+# Uncomment if you don't want multiple lockfiles committed
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Supabase
+supabase/.temp/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
