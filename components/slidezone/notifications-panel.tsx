@@ -48,13 +48,14 @@ export function NotificationsPanel({ isOpen, onClose }: NotificationsPanelProps)
           initial={{ opacity: 0, x: 300 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 300 }}
-          className="fixed right-0 top-0 h-full w-full sm:w-96 bg-[#2f3136] border-l border-[#40444b] shadow-xl z-50 flex flex-col"
+          className="fixed right-0 top-0 h-full w-full sm:w-96 shadow-xl z-50 flex flex-col"
+          style={{ background: "var(--bg-1)", borderLeft: `1px solid var(--border)` }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-[#40444b]">
+          <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: "var(--border)" }}>
             <div className="flex items-center gap-2">
-              <Bell className="h-5 w-5 text-[#dcddde]" />
-              <h2 className="text-lg font-semibold text-[#dcddde]">Notifications</h2>
+              <Bell className="h-5 w-5" style={{ color: "var(--text-1)" }} />
+              <h2 className="text-lg font-semibold" style={{ color: "var(--text-1)" }}>Notifications</h2>
               {unreadCount > 0 && <Badge className="bg-[#5865f2] text-white">{unreadCount}</Badge>}
             </div>
             <div className="flex items-center gap-2">
@@ -63,7 +64,8 @@ export function NotificationsPanel({ isOpen, onClose }: NotificationsPanelProps)
                   variant="ghost"
                   size="sm"
                   onClick={markAllAsRead}
-                  className="text-[#b9bbbe] hover:text-white hover:bg-[#40444b]"
+                  className=""
+                  style={{ color: "var(--text-2)" }}
                 >
                   <CheckCheck className="h-4 w-4" />
                 </Button>
@@ -72,7 +74,8 @@ export function NotificationsPanel({ isOpen, onClose }: NotificationsPanelProps)
                 variant="ghost"
                 size="icon"
                 onClick={onClose}
-                className="text-[#b9bbbe] hover:text-white hover:bg-[#40444b]"
+                className=""
+                style={{ color: "var(--text-2)" }}
               >
                 <X className="h-5 w-5" />
               </Button>
@@ -83,9 +86,9 @@ export function NotificationsPanel({ isOpen, onClose }: NotificationsPanelProps)
           <div className="flex-1 overflow-y-auto">
             {notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                <Bell className="h-12 w-12 text-[#72767d] mb-4" />
-                <h3 className="text-lg font-medium text-[#dcddde] mb-2">No notifications</h3>
-                <p className="text-sm text-[#72767d]">You're all caught up!</p>
+                <Bell className="h-12 w-12 mb-4" style={{ color: "var(--text-3)" }} />
+                <h3 className="text-lg font-medium mb-2" style={{ color: "var(--text-1)" }}>No notifications</h3>
+                <p className="text-sm" style={{ color: "var(--text-3)" }}>You're all caught up!</p>
               </div>
             ) : (
               <div className="p-4 space-y-3">
@@ -94,22 +97,24 @@ export function NotificationsPanel({ isOpen, onClose }: NotificationsPanelProps)
                     key={notification.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`p-3 rounded-lg border transition-colors cursor-pointer ${
-                      notification.read ? "bg-[#36393f] border-[#40444b]" : "bg-[#5865f2]/10 border-[#5865f2]/30"
-                    }`}
+                    className={`p-3 rounded-lg border transition-colors cursor-pointer`}
+                    style={{
+                      background: notification.read ? "var(--bg-2)" : "color-mix(in oklab, var(--brandPrimary), black 90%)",
+                      borderColor: notification.read ? "var(--border)" : "color-mix(in oklab, var(--brandPrimary), black 70%)",
+                    }}
                     onClick={() => !notification.read && markAsRead(notification.id)}
                   >
                     <div className="flex items-start gap-3">
-                      <div className={`mt-1 flex-shrink-0 ${getNotificationColor(notification.type)}`}>
+                      <div className={`mt-1 flex-shrink-0`} style={{ color: "var(--text-2)" }}>
                         {getNotificationIcon(notification.type)}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h4 className="text-sm font-medium text-[#dcddde] truncate">{notification.title}</h4>
-                          {!notification.read && <div className="w-2 h-2 bg-[#5865f2] rounded-full flex-shrink-0" />}
+                          <h4 className="text-sm font-medium truncate" style={{ color: "var(--text-1)" }}>{notification.title}</h4>
+                          {!notification.read && <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "var(--brandPrimary)" }} />}
                         </div>
-                        <p className="text-sm text-[#b9bbbe] mb-2 break-words">{notification.message}</p>
-                        <p className="text-xs text-[#72767d]">
+                        <p className="text-sm mb-2 break-words" style={{ color: "var(--text-2)" }}>{notification.message}</p>
+                        <p className="text-xs" style={{ color: "var(--text-3)" }}>
                           {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                         </p>
                       </div>
@@ -121,7 +126,8 @@ export function NotificationsPanel({ isOpen, onClose }: NotificationsPanelProps)
                             e.stopPropagation()
                             markAsRead(notification.id)
                           }}
-                          className="h-6 w-6 text-[#72767d] hover:text-[#dcddde] flex-shrink-0"
+                          className="h-6 w-6 flex-shrink-0"
+                          style={{ color: "var(--text-2)" }}
                         >
                           <Check className="h-3 w-3" />
                         </Button>

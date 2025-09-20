@@ -364,6 +364,7 @@ function AuthSignUp({ onSignIn }: { onSignIn: () => void }) {
     error: null,
     showPassword: false,
   })
+  const [signUpSuccess, setSignUpSuccess] = React.useState(false)
 
   const { signUp } = useAuth()
   const {
@@ -383,6 +384,7 @@ function AuthSignUp({ onSignIn }: { onSignIn: () => void }) {
     setFormState((prev) => ({ ...prev, isLoading: true, error: null }))
     try {
       await signUp(data.email, data.password, data.name)
+      setSignUpSuccess(true)
     } catch (error: any) {
       setFormState((prev) => ({ ...prev, error: error.message || "Sign up failed" }))
     } finally {
@@ -398,114 +400,134 @@ function AuthSignUp({ onSignIn }: { onSignIn: () => void }) {
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className="p-8"
     >
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-semibold text-foreground">Create account</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Get started with your account</p>
-      </div>
-
-      <AuthError message={formState.error} />
-
-      {/* Google Sign Up Button */}
-      <AuthSocialButtons isLoading={formState.isLoading} />
-
-      <AuthSeparator text="Or continue with email" />
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder="John Doe"
-            disabled={formState.isLoading}
-            className={cn(errors.name && "border-destructive")}
-            {...register("name")}
-          />
-          {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
+      {signUpSuccess ? (
+        <div className="flex flex-col items-center text-center">
+          <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <MailCheck className="h-8 w-8 text-primary" />
+          </div>
+          <h1 className="text-2xl font-semibold text-foreground">Verify your email</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            We sent a confirmation link to your email. Please verify to complete signup.
+          </p>
+          <Button variant="outline" className="mt-6 w-full max-w-xs bg-transparent" onClick={onSignIn}>
+            Back to sign in
+          </Button>
+          <p className="mt-6 text-xs text-muted-foreground">
+            No email? Check spam or try a different email.
+          </p>
         </div>
+      ) : (
+        <>
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-semibold text-foreground">Create account</h1>
+            <p className="mt-2 text-sm text-muted-foreground">Get started with your account</p>
+          </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="name@example.com"
-            disabled={formState.isLoading}
-            className={cn(errors.email && "border-destructive")}
-            {...register("email")}
-          />
-          {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
-        </div>
+          <AuthError message={formState.error} />
 
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <div className="relative">
-            <Input
-              id="password"
-              type={formState.showPassword ? "text" : "password"}
-              placeholder="••••••••"
-              disabled={formState.isLoading}
-              className={cn(errors.password && "border-destructive")}
-              {...register("password")}
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="absolute right-0 top-0 h-full"
-              onClick={() => setFormState((prev) => ({ ...prev, showPassword: !prev.showPassword }))}
-              disabled={formState.isLoading}
-            >
-              {formState.showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          {/* Google Sign Up Button */}
+          <AuthSocialButtons isLoading={formState.isLoading} />
+
+          <AuthSeparator text="Or continue with email" />
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="John Doe"
+                disabled={formState.isLoading}
+                className={cn(errors.name && "border-destructive")}
+                {...register("name")}
+              />
+              {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                disabled={formState.isLoading}
+                className={cn(errors.email && "border-destructive")}
+                {...register("email")}
+              />
+              {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={formState.showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  disabled={formState.isLoading}
+                  className={cn(errors.password && "border-destructive")}
+                  {...register("password")}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full"
+                  onClick={() => setFormState((prev) => ({ ...prev, showPassword: !prev.showPassword }))}
+                  disabled={formState.isLoading}
+                >
+                  {formState.showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
+              {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="terms"
+                checked={terms}
+                onCheckedChange={(checked) => setValue("terms", checked === true)}
+                disabled={formState.isLoading}
+              />
+              <div className="space-y-1">
+                <Label htmlFor="terms" className="text-sm">
+                  I agree to the terms
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  By signing up, you agree to our{" "}
+                  <Button variant="link" className="h-auto p-0 text-xs">
+                    Terms
+                  </Button>{" "}
+                  and{" "}
+                  <Button variant="link" className="h-auto p-0 text-xs">
+                    Privacy Policy
+                  </Button>
+                  .
+                </p>
+              </div>
+            </div>
+            {errors.terms && <p className="text-xs text-destructive">{errors.terms.message}</p>}
+
+            <Button type="submit" className="w-full" disabled={formState.isLoading}>
+              {formState.isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating account...
+                </>
+              ) : (
+                "Create account"
+              )}
             </Button>
-          </div>
-          {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
-        </div>
+          </form>
 
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="terms"
-            checked={terms}
-            onCheckedChange={(checked) => setValue("terms", checked === true)}
-            disabled={formState.isLoading}
-          />
-          <div className="space-y-1">
-            <Label htmlFor="terms" className="text-sm">
-              I agree to the terms
-            </Label>
-            <p className="text-xs text-muted-foreground">
-              By signing up, you agree to our{" "}
-              <Button variant="link" className="h-auto p-0 text-xs">
-                Terms
-              </Button>{" "}
-              and{" "}
-              <Button variant="link" className="h-auto p-0 text-xs">
-                Privacy Policy
-              </Button>
-              .
-            </p>
-          </div>
-        </div>
-        {errors.terms && <p className="text-xs text-destructive">{errors.terms.message}</p>}
-
-        <Button type="submit" className="w-full" disabled={formState.isLoading}>
-          {formState.isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Creating account...
-            </>
-          ) : (
-            "Create account"
-          )}
-        </Button>
-      </form>
-
-      <p className="mt-8 text-center text-sm text-muted-foreground">
-        Have an account?{" "}
-        <Button variant="link" className="h-auto p-0 text-sm" onClick={onSignIn} disabled={formState.isLoading}>
-          Sign in
-        </Button>
-      </p>
+          <p className="mt-8 text-center text-sm text-muted-foreground">
+            Have an account?{" "}
+            <Button variant="link" className="h-auto p-0 text-sm" onClick={onSignIn} disabled={formState.isLoading}>
+              Sign in
+            </Button>
+          </p>
+        </>
+      )}
     </motion.div>
   )
 }

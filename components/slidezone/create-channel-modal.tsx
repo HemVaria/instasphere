@@ -76,15 +76,17 @@ export function CreateChannelModal({ isOpen, onClose }: CreateChannelModalProps)
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-md bg-[#36393f] rounded-lg shadow-xl mx-4"
+            className="w-full max-w-md rounded-lg shadow-xl mx-4"
+            style={{ background: "var(--bg-1)", border: `1px solid var(--border)` }}
           >
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#40444b]">
-              <h2 className="text-lg sm:text-xl font-semibold text-[#dcddde]">Create Text Channel</h2>
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b" style={{ borderColor: "var(--border)" }}>
+              <h2 className="text-lg sm:text-xl font-semibold" style={{ color: "var(--text-1)" }}>Create Text Channel</h2>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={handleClose}
-                className="text-[#b9bbbe] hover:text-white hover:bg-[#40444b]"
+                className="hover:bg-transparent"
+                style={{ color: "var(--text-2)" }}
               >
                 <X className="h-5 w-5" />
               </Button>
@@ -93,7 +95,7 @@ export function CreateChannelModal({ isOpen, onClose }: CreateChannelModalProps)
             <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-6">
               {/* Error Message */}
               {error && (
-                <div className="flex items-center gap-2 p-3 bg-[#ed4245]/10 border border-[#ed4245]/20 rounded-lg">
+                <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: "rgba(237,66,69,0.1)", border: "1px solid rgba(237,66,69,0.2)" }}>
                   <AlertCircle className="h-4 w-4 text-[#ed4245] flex-shrink-0" />
                   <p className="text-sm text-[#ed4245]">{error}</p>
                 </div>
@@ -101,34 +103,35 @@ export function CreateChannelModal({ isOpen, onClose }: CreateChannelModalProps)
 
               {/* Channel Name */}
               <div className="space-y-2">
-                <Label htmlFor="channel-name" className="text-sm font-medium text-[#dcddde]">
+                <Label htmlFor="channel-name" className="text-sm font-medium" style={{ color: "var(--text-1)" }}>
                   Channel Name
                 </Label>
                 <div className="relative">
-                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#72767d]" />
+                  <Hash className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "var(--text-3)" }} />
                   <Input
                     id="channel-name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="awesome-channel"
-                    className="pl-10 bg-[#40444b] border-[#40444b] text-[#dcddde] placeholder:text-[#72767d] focus:border-[#5865f2]"
+                    className="pl-10"
+                    style={{ background: "var(--bg-2)", borderColor: "var(--border)", color: "var(--text-1)" }}
                     required
                     maxLength={50}
                   />
                 </div>
                 {previewName && previewName !== name && (
-                  <p className="text-xs text-[#72767d]">
-                    Will be created as: <span className="text-[#dcddde]">#{previewName}</span>
+                  <p className="text-xs" style={{ color: "var(--text-3)" }}>
+                    Will be created as: <span style={{ color: "var(--text-1)" }}>#{previewName}</span>
                   </p>
                 )}
-                <p className="text-xs text-[#72767d]">
+                <p className="text-xs" style={{ color: "var(--text-3)" }}>
                   Channel names must be lowercase and can only contain letters, numbers, and dashes.
                 </p>
               </div>
 
               {/* Channel Description */}
               <div className="space-y-2">
-                <Label htmlFor="channel-description" className="text-sm font-medium text-[#dcddde]">
+                <Label htmlFor="channel-description" className="text-sm font-medium" style={{ color: "var(--text-1)" }}>
                   Channel Description <span className="text-[#72767d]">(optional)</span>
                 </Label>
                 <Textarea
@@ -136,7 +139,8 @@ export function CreateChannelModal({ isOpen, onClose }: CreateChannelModalProps)
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="What's this channel about?"
-                  className="bg-[#40444b] border-[#40444b] text-[#dcddde] placeholder:text-[#72767d] focus:border-[#5865f2] resize-none"
+                  className="resize-none"
+                  style={{ background: "var(--bg-2)", borderColor: "var(--border)", color: "var(--text-1)" }}
                   rows={3}
                   maxLength={200}
                 />
@@ -144,21 +148,25 @@ export function CreateChannelModal({ isOpen, onClose }: CreateChannelModalProps)
 
               {/* Privacy Settings */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium text-[#dcddde]">Privacy Settings</Label>
+                <Label className="text-sm font-medium" style={{ color: "var(--text-1)" }}>Privacy Settings</Label>
                 <div className="space-y-2">
                   <button
                     type="button"
                     onClick={() => setIsPrivate(false)}
                     className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-colors ${
                       !isPrivate
-                        ? "border-[#5865f2] bg-[#5865f2]/10"
-                        : "border-[#40444b] bg-[#2f3136] hover:bg-[#40444b]"
+                        ? ""
+                        : "hover:bg-transparent"
                     }`}
+                    style={{
+                      borderColor: !isPrivate ? "var(--brandPrimary)" : "var(--border)",
+                      background: !isPrivate ? "color-mix(in oklab, var(--brandPrimary), black 90%)" : "var(--bg-2)",
+                    }}
                   >
-                    <Globe className="h-5 w-5 text-[#72767d] flex-shrink-0" />
+                    <Globe className="h-5 w-5 flex-shrink-0" style={{ color: "var(--text-3)" }} />
                     <div className="text-left">
-                      <p className="font-medium text-[#dcddde]">Public</p>
-                      <p className="text-sm text-[#72767d]">Everyone can view and join this channel</p>
+                      <p className="font-medium" style={{ color: "var(--text-1)" }}>Public</p>
+                      <p className="text-sm" style={{ color: "var(--text-3)" }}>Everyone can view and join this channel</p>
                     </div>
                   </button>
                   <button
@@ -166,14 +174,18 @@ export function CreateChannelModal({ isOpen, onClose }: CreateChannelModalProps)
                     onClick={() => setIsPrivate(true)}
                     className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-colors ${
                       isPrivate
-                        ? "border-[#5865f2] bg-[#5865f2]/10"
-                        : "border-[#40444b] bg-[#2f3136] hover:bg-[#40444b]"
+                        ? ""
+                        : "hover:bg-transparent"
                     }`}
+                    style={{
+                      borderColor: isPrivate ? "var(--brandPrimary)" : "var(--border)",
+                      background: isPrivate ? "color-mix(in oklab, var(--brandPrimary), black 90%)" : "var(--bg-2)",
+                    }}
                   >
-                    <Lock className="h-5 w-5 text-[#72767d] flex-shrink-0" />
+                    <Lock className="h-5 w-5 flex-shrink-0" style={{ color: "var(--text-3)" }} />
                     <div className="text-left">
-                      <p className="font-medium text-[#dcddde]">Private</p>
-                      <p className="text-sm text-[#72767d]">Only selected members can view this channel</p>
+                      <p className="font-medium" style={{ color: "var(--text-1)" }}>Private</p>
+                      <p className="text-sm" style={{ color: "var(--text-3)" }}>Only selected members can view this channel</p>
                     </div>
                   </button>
                 </div>
@@ -186,14 +198,16 @@ export function CreateChannelModal({ isOpen, onClose }: CreateChannelModalProps)
                   variant="ghost"
                   onClick={handleClose}
                   disabled={isLoading}
-                  className="text-[#b9bbbe] hover:text-white hover:bg-[#40444b] w-full sm:w-auto"
+                  className="w-full sm:w-auto"
+                  style={{ color: "var(--text-2)" }}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={!name.trim() || isLoading}
-                  className="bg-[#5865f2] hover:bg-[#4752c4] text-white w-full sm:w-auto"
+                  className="w-full sm:w-auto text-white"
+                  style={{ background: "var(--brandPrimary)", borderColor: "var(--brandPrimary)" }}
                 >
                   {isLoading ? "Creating..." : "Create Channel"}
                 </Button>

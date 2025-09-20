@@ -250,17 +250,6 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     try {
       const supabase = createClient()
 
-      // First check if the user_presence table exists
-      const { error: checkError } = await supabase
-        .from('user_presence')
-        .select('user_id')
-        .limit(1)
-      
-      // If table doesn't exist, silently return
-      if (checkError && checkError.message.includes("does not exist")) {
-        return
-      }
-
       const { error } = await supabase.from("user_presence").upsert({
         user_id: user.id,
         last_seen: new Date().toISOString(),
@@ -268,7 +257,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         status: "online",
       })
 
-      if (error) {
+      if (error && !error.message.includes("does not exist")) {
         console.error("Error updating presence:", error)
       }
     } catch (err: any) {
@@ -304,6 +293,39 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       }
 
       console.log("✅ Message sent successfully")
+
+      // Create notifications for other users in the workspace (excluding sender)
+      try {
+        // Fetch channel name for nicer title (best-effort)
+        let channelName = channelId
+        try {
+          const { data: channelRow } = await supabase.from("channels").select("name").eq("id", channelId).single()
+          if (channelRow?.name) channelName = channelRow.name
+        } catch {}
+
+        // Get all users to notify (no membership table yet, use presence)
+        const { data: presenceRows } = await supabase
+          .from("user_presence")
+          .select("user_id")
+          .neq("user_id", user.id)
+
+        const recipients = (presenceRows || []).map((r: any) => r.user_id)
+        if (recipients.length > 0) {
+          const notificationRows = recipients.map((recipientId: string) => ({
+            user_id: recipientId,
+            type: "message",
+            title: `New message in #${channelName}`,
+            message: messageData.content,
+            data: { channelId, messageId: (data as any)?.id, fromUserId: user.id, fromUserName: messageData.user_name },
+            read: false,
+          }))
+
+          await supabase.from("notifications").insert(notificationRows)
+        }
+      } catch (notifyErr) {
+        // Fail silently; messaging should not break due to notifications
+        console.warn("⚠️ Failed to create notifications for message:", notifyErr)
+      }
     } catch (err: any) {
       console.error("Network error sending message:", err)
       setError(`Failed to send message: ${err.message}`)

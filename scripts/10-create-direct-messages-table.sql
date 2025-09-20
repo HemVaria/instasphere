@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS public.direct_messages (
     receiver_name TEXT NOT NULL,
     sender_avatar TEXT,
     receiver_avatar TEXT,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    deleted_at TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );

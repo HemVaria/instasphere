@@ -11,9 +11,8 @@ import { ErrorBoundary } from "@/components/ui/error-boundary"
 import { ConnectionStatus } from "@/components/ui/connection-status"
 import { useAuth } from "@/hooks/use-auth"
 import { FeedPage } from "@/components/feed/feed-page"
-import { HuggingFaceChatbot } from "@/components/huggingface/chatbot"
 
-type AppView = "landing" | "chat" | "explore" | "settings" | "feed" | "chatbot"
+type AppView = "landing" | "chat" | "explore" | "settings" | "feed"
 
 export default function HomePage() {
   const [showAuth, setShowAuth] = useState(false)
@@ -123,7 +122,6 @@ export default function HomePage() {
               onNavigateToExplore={() => setCurrentView("explore")}
               onNavigateToSettings={() => setCurrentView("settings")}
               onNavigateToFeed={() => setCurrentView("feed")}
-              onNavigateToChatbot={() => setCurrentView("chatbot")}
             />
           </motion.div>
         )}
@@ -158,44 +156,6 @@ export default function HomePage() {
             transition={{ duration: 0.2 }}
           >
             <FeedPage onNavigateBack={() => setCurrentView("chat")} />
-          </motion.div>
-        )}
-        {currentView === "chatbot" && (
-          <motion.div
-            key="chatbot"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div className="container mx-auto py-8 px-4">
-              <div className="flex items-center mb-4">
-                <button
-                  onClick={() => setCurrentView("chat")}
-                  className="flex items-center text-muted-foreground hover:text-foreground"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mr-2 h-4 w-4"
-                  >
-                    <path d="m15 18-6-6 6-6" />
-                  </svg>
-                  Back
-                </button>
-                <h1 className="text-2xl font-bold ml-4">AI Chatbot</h1>
-              </div>
-              <div className="max-w-2xl mx-auto h-[600px]">
-                <HuggingFaceChatbot />
-              </div>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>

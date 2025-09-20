@@ -18,6 +18,12 @@ interface ExplorePageProps {
 export function ExplorePage({ onNavigateBack }: ExplorePageProps) {
   const { stats, recentMessages, topChannels, onlineUsers, loading } = useExploreData()
 
+  // Guard against undefined values while data loads
+  const safeRecentMessages = Array.isArray(recentMessages) ? recentMessages : []
+  const safeTopChannels = Array.isArray(topChannels) ? topChannels : []
+  const safeOnlineUsers = Array.isArray(onlineUsers) ? onlineUsers : []
+  const safeStats = stats || { totalUsers: 0, messagesToday: 0, totalMessages: 0, totalChannels: 0 }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#36393f] text-white flex items-center justify-center">
@@ -112,12 +118,12 @@ export function ExplorePage({ onNavigateBack }: ExplorePageProps) {
                   Recent Activity
                 </h3>
                 <div className="space-y-4">
-                  {(!recentMessages || recentMessages.length === 0) ? (
+                  {safeRecentMessages.length === 0 ? (
                     <Card className="bg-[#2f3136] border-[#40444b] p-6 text-center">
                       <p className="text-[#72767d]">No recent messages yet. Start a conversation!</p>
                     </Card>
                   ) : (
-                    recentMessages.map((message, index) => (
+                    safeRecentMessages.map((message, index) => (
                       <motion.div
                         key={message.id}
                         initial={{ y: 20, opacity: 0 }}
@@ -179,23 +185,23 @@ export function ExplorePage({ onNavigateBack }: ExplorePageProps) {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <span className="text-[#b9bbbe]">Total Users</span>
-                      <span className="font-semibold text-[#dcddde]">{stats?.totalUsers?.toLocaleString() || '0'}</span>
+                      <span className="font-semibold text-[#dcddde]">{safeStats.totalUsers.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#b9bbbe]">Messages Today</span>
-                      <span className="font-semibold text-[#dcddde]">{stats?.messagesToday?.toLocaleString() || '0'}</span>
+                      <span className="font-semibold text-[#dcddde]">{safeStats.messagesToday.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#b9bbbe]">Total Messages</span>
-                      <span className="font-semibold text-[#dcddde]">{stats?.totalMessages?.toLocaleString() || '0'}</span>
+                      <span className="font-semibold text-[#dcddde]">{safeStats.totalMessages.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#b9bbbe]">Active Channels</span>
-                      <span className="font-semibold text-[#dcddde]">{stats?.totalChannels || 0}</span>
+                      <span className="font-semibold text-[#dcddde]">{safeStats.totalChannels}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#b9bbbe]">Online Now</span>
-                      <span className="font-semibold text-[#3ba55c]">{onlineUsers?.length || 0}</span>
+                      <span className="font-semibold text-[#3ba55c]">{safeOnlineUsers.length}</span>
                     </div>
                   </div>
                 </Card>
@@ -209,10 +215,10 @@ export function ExplorePage({ onNavigateBack }: ExplorePageProps) {
                     Popular Channels
                   </h3>
                   <div className="space-y-3">
-                    {(!topChannels || topChannels.length === 0) ? (
+                    {safeTopChannels.length === 0 ? (
                       <p className="text-[#72767d] text-sm">No channels available yet.</p>
                     ) : (
-                      topChannels.map((channel, index) => (
+                      safeTopChannels.map((channel, index) => (
                         <motion.div
                           key={channel.id}
                           initial={{ x: 20, opacity: 0 }}
@@ -240,13 +246,13 @@ export function ExplorePage({ onNavigateBack }: ExplorePageProps) {
                 <Card className="bg-[#2f3136] border-[#40444b] p-6">
                   <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 text-[#dcddde]">
                     <Users className="h-5 w-5 text-[#5865f2]" />
-                    Online Users ({onlineUsers?.length || 0})
+                    Online Users ({safeOnlineUsers.length})
                   </h3>
                   <div className="space-y-3 max-h-64 overflow-y-auto">
-                    {(!onlineUsers || onlineUsers.length === 0) ? (
+                    {safeOnlineUsers.length === 0 ? (
                       <p className="text-[#72767d] text-sm">No users online right now.</p>
                     ) : (
-                      onlineUsers.slice(0, 10).map((user, index) => (
+                      safeOnlineUsers.slice(0, 10).map((user, index) => (
                         <motion.div
                           key={user.id}
                           initial={{ x: 20, opacity: 0 }}

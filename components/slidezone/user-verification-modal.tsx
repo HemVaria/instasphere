@@ -83,18 +83,20 @@ export function UserVerificationModal({ isOpen, onClose, userId, onVerify }: Use
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="relative bg-[#2a2a2a] rounded-lg shadow-xl w-full max-w-md mx-4 border border-[#3a3a3a]"
+            className="relative rounded-lg shadow-xl w-full max-w-md mx-4"
+            style={{ background: "var(--bg-1)", border: `1px solid var(--border)` }}
           >
-            <div className="flex items-center justify-between p-6 border-b border-[#3a3a3a]">
+            <div className="flex items-center justify-between p-6 border-b" style={{ borderColor: "var(--border)" }}>
               <div className="flex items-center gap-3">
-                <Shield className="h-6 w-6 text-[#5865f2]" />
-                <h2 className="text-xl font-semibold text-white">User Verification</h2>
+                <Shield className="h-6 w-6" style={{ color: "var(--brandPrimary)" }} />
+                <h2 className="text-xl font-semibold" style={{ color: "var(--text-1)" }}>User Verification</h2>
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={onClose}
-                className="text-[#b0b0b0] hover:text-white hover:bg-[#3a3a3a]"
+                className="hover:bg-transparent"
+                style={{ color: "var(--text-2)" }}
               >
                 <X className="h-5 w-5" />
               </Button>
@@ -103,7 +105,7 @@ export function UserVerificationModal({ isOpen, onClose, userId, onVerify }: Use
             <div className="p-6 space-y-6">
               {/* Verification Type Selection */}
               <div>
-                <Label className="text-sm font-medium text-white mb-3 block">Choose Verification Method</Label>
+                <Label className="text-sm font-medium mb-3 block" style={{ color: "var(--text-1)" }}>Choose Verification Method</Label>
                 <div className="space-y-3">
                   {verificationTypes.map((type) => (
                     <div
@@ -111,39 +113,25 @@ export function UserVerificationModal({ isOpen, onClose, userId, onVerify }: Use
                       onClick={() => setSelectedVerificationType(type.type)}
                       className={`
                         flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-colors
-                        ${
-                          selectedVerificationType === type.type
-                            ? "border-[#5865f2] bg-[#5865f2]/10"
-                            : "border-[#3a3a3a] hover:border-[#4a4a4a] hover:bg-[#3a3a3a]"
-                        }
+                        ${selectedVerificationType === type.type ? "" : ""}
                       `}
+                      style={{
+                        borderColor: selectedVerificationType === type.type ? "var(--brandPrimary)" : "var(--border)",
+                        background: selectedVerificationType === type.type ? "color-mix(in oklab, var(--brandPrimary), black 90%)" : "var(--bg-2)",
+                      }}
                     >
                       <type.icon
-                        className={`h-5 w-5 ${
-                          type.color === "blue"
-                            ? "text-blue-400"
-                            : type.color === "green"
-                              ? "text-green-400"
-                              : "text-purple-400"
-                        }`}
+                        className={`h-5 w-5`}
+                        style={{ color: "var(--text-2)" }}
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium text-white">{type.title}</span>
-                          <Badge
-                            variant="outline"
-                            className={`text-xs ${
-                              type.color === "blue"
-                                ? "text-blue-400 border-blue-400"
-                                : type.color === "green"
-                                  ? "text-green-400 border-green-400"
-                                  : "text-purple-400 border-purple-400"
-                            }`}
-                          >
+                          <span className="font-medium" style={{ color: "var(--text-1)" }}>{type.title}</span>
+                          <Badge variant="outline" className="text-xs" style={{ color: "var(--text-2)", borderColor: "var(--border)" }}>
                             {type.badge}
                           </Badge>
                         </div>
-                        <p className="text-sm text-[#888]">{type.description}</p>
+                        <p className="text-sm" style={{ color: "var(--text-3)" }}>{type.description}</p>
                       </div>
                       <div
                         className={`w-4 h-4 rounded-full border-2 ${
@@ -161,7 +149,7 @@ export function UserVerificationModal({ isOpen, onClose, userId, onVerify }: Use
 
               {/* Verification Code Input */}
               <div>
-                <Label htmlFor="verification-code" className="text-sm font-medium text-white mb-2 block">
+                <Label htmlFor="verification-code" className="text-sm font-medium mb-2 block" style={{ color: "var(--text-1)" }}>
                   Verification Code
                 </Label>
                 <Input
@@ -170,9 +158,9 @@ export function UserVerificationModal({ isOpen, onClose, userId, onVerify }: Use
                   placeholder="Enter verification code"
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value)}
-                  className="bg-[#3a3a3a] border-[#4a4a4a] text-white placeholder:text-[#888] focus:border-[#5865f2]"
+                  style={{ background: "var(--bg-2)", borderColor: "var(--border)", color: "var(--text-1)" }}
                 />
-                <p className="text-xs text-[#888] mt-2">
+                <p className="text-xs mt-2" style={{ color: "var(--text-3)" }}>
                   {selectedVerificationType === "email" && "Check your email for the verification code"}
                   {selectedVerificationType === "phone" && "Check your phone for the SMS verification code"}
                   {selectedVerificationType === "identity" && "Enter the code from your identity verification process"}
@@ -202,14 +190,15 @@ export function UserVerificationModal({ isOpen, onClose, userId, onVerify }: Use
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-3 p-6 border-t border-[#3a3a3a]">
+            <div className="flex items-center justify-end gap-3 p-6 border-t" style={{ borderColor: "var(--border)" }}>
               <Button variant="ghost" onClick={onClose} className="text-[#b0b0b0] hover:text-white hover:bg-[#3a3a3a]">
                 Cancel
               </Button>
               <Button
                 onClick={handleVerify}
                 disabled={isVerifying || !verificationCode.trim()}
-                className="bg-[#5865f2] hover:bg-[#4752c4] text-white"
+                className="text-white"
+                style={{ background: "var(--brandPrimary)" }}
               >
                 {isVerifying ? "Verifying..." : "Verify User"}
               </Button>

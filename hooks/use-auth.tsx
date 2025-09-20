@@ -18,60 +18,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const DEMO_USER_STORAGE_KEY = "instasphere_demo_user"
-
 function isNetworkFetchError(err: unknown) {
   const msg = (err as any)?.message || ""
   return msg.includes("Failed to fetch") || msg.includes("NetworkError") || msg.includes("Load failed")
-}
-
-function createDemoUser(email: string, name?: string): User {
-  const id = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}`
-  const now = new Date().toISOString()
-  // Cast to any to satisfy @supabase/supabase-js type differences across versions
-  const demo: any = {
-    id,
-    aud: "authenticated",
-    role: null,
-    email,
-    phone: "",
-    confirmation_sent_at: now,
-    app_metadata: { provider: "demo" },
-    user_metadata: {
-      name: name || email.split("@")[0],
-      display_name: name || email.split("@")[0],
-      avatar_url: "/demo-avatar.png",
-    },
-    identities: [],
-    created_at: now,
-    updated_at: now,
-    last_sign_in_at: now,
-    factors: [],
-    is_anonymous: false,
-  }
-  return demo as User
-}
-
-function saveDemoUser(user: User) {
-  try {
-    localStorage.setItem(DEMO_USER_STORAGE_KEY, JSON.stringify(user))
-  } catch {}
-}
-
-function getSavedDemoUser(): User | null {
-  try {
-    const raw = localStorage.getItem(DEMO_USER_STORAGE_KEY)
-    if (!raw) return null
-    return JSON.parse(raw)
-  } catch {
-    return null
-  }
-}
-
-function clearSavedDemoUser() {
-  try {
-    localStorage.removeItem(DEMO_USER_STORAGE_KEY)
-  } catch {}
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -86,16 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const initializeAuth = async () => {
       try {
-        // 1) If a demo user exists, use it immediately and skip network calls
-        const demo = getSavedDemoUser()
-        if (demo) {
-          setUser(demo)
-          setError(null)
-          setLoading(false)
-          return
-        }
-
-        // 2) Otherwise try Supabase
+        // Initialize Supabase and check existing session
         supabase = createClient()
 
         // Hard timeout for initial session fetch to avoid long hangs in preview
@@ -164,40 +104,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(null)
       setLoading(true)
 
-      // If already in demo mode, just ensure user is present
-      const existingDemo = getSavedDemoUser()
-      if (existingDemo) {
-        setUser(existingDemo)
-        return
-      }
-
       const supabase = createClient()
       const { error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       })
 
-      if (error) {
-        // Fallback to demo user on network fetch failure
-        if (isNetworkFetchError(error)) {
-          const demo = createDemoUser(email)
-          saveDemoUser(demo)
-          setUser(demo)
-          console.warn("Network issue detected. Using demo user for preview.")
-          return
-        }
-        throw new Error(error.message)
-      }
+      if (error) throw new Error(error.message)
 
       // Supabase will update via onAuthStateChange
     } catch (err: any) {
-      if (isNetworkFetchError(err)) {
-        const demo = createDemoUser(email)
-        saveDemoUser(demo)
-        setUser(demo)
-        console.warn("Network issue detected. Using demo user for preview.")
-        return
-      }
+      if (isNetworkFetchError(err)) throw err
       console.error("Sign in failed:", err)
       setError(err.message || "Failed to sign in")
       throw err
@@ -211,18 +128,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(null)
       setLoading(true)
 
-      // If already in demo mode, just ensure user is present
-      const existingDemo = getSavedDemoUser()
-      if (existingDemo) {
-        setUser(existingDemo)
-        return
-      }
-
       const supabase = createClient()
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
+          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}` : undefined,
           data: {
             name: name.trim(),
             display_name: name.trim(),
@@ -230,36 +141,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       })
 
-      if (error) {
-        // Fallback to demo user on network fetch failure
-        if (isNetworkFetchError(error)) {
-          const demo = createDemoUser(email, name)
-          saveDemoUser(demo)
-          setUser(demo)
-          console.warn("Network issue detected. Using demo user for preview.")
-          return
-        }
-        throw new Error(error.message)
-      }
-
-      // In email confirmation flows, user may not be immediately available.
-      // We'll optimistically create a demo user for preview if session isn't returned.
-      setTimeout(() => {
-        if (!getSavedDemoUser()) {
-          const demo = createDemoUser(email, name)
-          saveDemoUser(demo)
-          setUser(demo)
-          console.warn("Using demo user until email confirmation completes.")
-        }
-      }, 500)
+      if (error) throw new Error(error.message)
+      // Ensure no session is set until email is confirmed
+      setUser(null)
     } catch (err: any) {
-      if (isNetworkFetchError(err)) {
-        const demo = createDemoUser(email, name)
-        saveDemoUser(demo)
-        setUser(demo)
-        console.warn("Network issue detected. Using demo user for preview.")
-        return
-      }
+      if (isNetworkFetchError(err)) throw err
       console.error("Sign up failed:", err)
       setError(err.message || "Failed to sign up")
       throw err
@@ -273,13 +159,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setError(null)
       setLoading(true)
 
-      // If demo mode active, just keep the demo user
-      const existingDemo = getSavedDemoUser()
-      if (existingDemo) {
-        setUser(existingDemo)
-        return
-      }
-
       const supabase = createClient()
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -292,26 +171,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       })
 
-      if (error) {
-        if (isNetworkFetchError(error)) {
-          // Fallback: create a demo user
-          const demo = createDemoUser("demo@instasphere.local", "Demo User")
-          saveDemoUser(demo)
-          setUser(demo)
-          console.warn("Network issue detected. Using demo user for preview.")
-          return
-        }
-        throw new Error(error.message)
-      }
+      if (error) throw new Error(error.message)
       // OAuth flow will redirect; after redirect, onAuthStateChange handles it.
     } catch (err: any) {
-      if (isNetworkFetchError(err)) {
-        const demo = createDemoUser("demo@instasphere.local", "Demo User")
-        saveDemoUser(demo)
-        setUser(demo)
-        console.warn("Network issue detected. Using demo user for preview.")
-        return
-      }
+      if (isNetworkFetchError(err)) throw err
       console.error("Google sign in failed:", err)
       setError(err.message || "Failed to sign in with Google")
       throw err
@@ -328,7 +191,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       // Ignore sign out errors in preview/demo
     } finally {
-      clearSavedDemoUser()
       setUser(null)
     }
   }

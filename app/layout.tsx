@@ -2,6 +2,9 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
+import "../styles/theme-sundown.css"
+import "../styles/sundown-fixes.css"
+import "../styles/sundown-channels.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/hooks/use-auth"
 import { ChatProvider } from "@/hooks/use-chat"
@@ -30,8 +33,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-theme="sundown">
       <body className={inter.className}>
+        {/* Chatling embed */}
+        <Script id="chatling-config" strategy="afterInteractive">
+          {`window.chtlConfig = { chatbotId: "4768126643" }`}
+        </Script>
+        <Script id="chatling-script" strategy="afterInteractive" src="https://chatling.ai/js/embed.js" data-id="4768126643" async />
         <ErrorBoundary>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
             <AuthProvider>
@@ -49,18 +57,6 @@ export default function RootLayout({
             </AuthProvider>
           </ThemeProvider>
         </ErrorBoundary>
-
-        {/* Chatling widget config and loader */}
-        <Script id="chatling-config" strategy="afterInteractive">
-          {`window.chtlConfig = { chatbotId: "4768126643" };`}
-        </Script>
-        <Script
-          id="chatling-embed"
-          strategy="afterInteractive"
-          src="https://chatling.ai/js/embed.js"
-          data-id="4768126643"
-          async
-        />
       </body>
     </html>
   )
