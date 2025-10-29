@@ -1,7 +1,8 @@
 # 📸 Instasphere
 ### *Your Visual Universe, Connected*
 [![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge&logo=vercel)](https://instasphere-final.vercel.app)
-[![YouTube](https://img.shields.io/badge/YouTube-Watch%20Demo-red?style=for-the-badge&logo=youtube)(https://youtu.be/Md2WGlUOvKs))
+[![YouTube](https://img.shields.io/badge/YouTube-Watch%20Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/Md2WGlUOvKs)
+
 
 [![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
 
