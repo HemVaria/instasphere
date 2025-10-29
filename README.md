@@ -1,5 +1,4 @@
-```markdown
-# Instasphere
+# 📸 Instasphere
 ### *Your Visual Universe, Connected*
 [![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge&logo=vercel)](https://instasphere-final.vercel.app)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)](LICENSE)
@@ -7,27 +6,27 @@
 **Capture. Share. Connect.**  
 Instasphere is a sleek, image-first social network where moments come alive — post photos, short videos, follow friends, and explore trending content in real time.
 
-**→ [Live Demo](https://instasphere-final.vercel.app)**  
-**→ [Report Bug](https://github.com/HemVaria/instasphere/issues)**  
-**→ [Request Feature](https://github.com/HemVaria/instasphere/issues)**  
+**→ [🚀 Live Demo](https://instasphere-final.vercel.app)**  
+**→ [🐛 Report Bug](https://github.com/HemVaria/instasphere/issues)**  
+**→ [✨ Request Feature](https://github.com/HemVaria/instasphere/issues)**  
 
 ---
 
-## Table of Contents
-- [What is Instasphere?](#what-is-instasphere)
-- [Features](#features)
-- [Demo](#demo)
-- [Tech Stack](#tech-stack)
-- [Quick Start](#quick-start)
-- [Screenshots](#screenshots)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [Author](#author)
-- [License](#license)
+## 📖 Table of Contents
+- [🎯 What is Instasphere?](#-what-is-instasphere)
+- [✨ Features](#-features)
+- [🎥 Demo](#-demo)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [⚡ Quick Start](#-quick-start)
+- [📱 Screenshots](#-screenshots)
+- [🗺️ Roadmap](#️-roadmap)
+- [🤝 Contributing](#-contributing)
+- [👨‍💻 Author](#-author)
+- [📄 License](#-license)
 
 ---
 
-## What is Instasphere?
+## 🎯 What is Instasphere?
 
 You're scrolling through life — a sunset, a coffee, a laugh with friends — and you want to **share it instantly**, beautifully, with the world.
 
@@ -36,52 +35,52 @@ You're scrolling through life — a sunset, a coffee, a laugh with friends — a
 No clutter. Just your story, amplified.
 
 ### Perfect For:
-- Daily photo dumps
-- Short video reels
-- Trending hashtag challenges
-- Building a creative community
-- Exploring global visual stories
+- 📸 Daily photo dumps
+- 🎞️ Short video reels
+- 🔥 Trending hashtag challenges
+- 👥 Building a creative community
+- 🌍 Exploring global visual stories
 
 ---
 
-## Features
+## ✨ Features
 
-### Fast Media Uploads  
+### 📤 Fast Media Uploads  
 Drag, drop, or pick — images and short videos upload in **under 2 seconds** with progress tracking.
 
-### Like & Comment  
+### ❤️ Like & Comment  
 React with a heart, leave a comment — all updates sync **in real time**.
 
-### Profile Pages  
+### 👤 Profile Pages  
 Customizable profiles with bio, follower count, and grid/post list views.
 
-### Follow & Feed  
+### ➡️ Follow & Feed  
 Follow your favorite creators — get a personalized, chronological feed of their latest posts.
 
-### Search & Discover  
+### 🔍 Search & Discover  
 Search users, hashtags, or explore trending content in the **Explore tab**.
 
-### Real-Time Interactions  
+### 💬 Real-Time Interactions  
 New likes, comments, and follows appear **instantly** via WebSockets.
 
-### Fully Responsive  
+### 📱 Fully Responsive  
 Looks stunning on mobile, tablet, and desktop — optimized touch gestures included.
 
-### Optional Reels  
+### 🎥 Optional Reels  
 Short video playback with mute/unmute, auto-loop, and full-screen mode.
 
 ---
 
-## Demo
+## 🎥 Demo
 
-### Live on Vercel
+### 🌐 Live on Vercel
 [https://instasphere-final.vercel.app](https://instasphere-final.vercel.app)
 
 > Try it: Sign up with email or Google, upload a photo, follow someone, and watch the magic.
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 **Frontend:** Next.js 14 (App Router), React, TypeScript  
 **Styling:** Tailwind CSS  
@@ -107,20 +106,19 @@ Short video playback with mute/unmute, auto-loop, and full-screen mode.
 
 ---
 
-## Quick Start
+## ⚡ Quick Start
 
-### Clone & Install
+### 🧩 Clone & Install
 ```bash
 git clone https://github.com/HemVaria/instasphere.git
 cd instasphere
 npm install
 ```
 
-### Environment Setup
+### ⚙️ Environment Setup
 ```bash
 cp .env.example .env.local
 ```
-
 Then fill in:
 ```env
 # Database
@@ -146,30 +144,27 @@ PUSHER_SECRET=
 PUSHER_CLUSTER=
 ```
 
-### Run Dev Server
+### 🏃 Run Dev Server
 ```bash
 npm run dev
 ```
-
 Open [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## Screenshots
+## 📱 Screenshots
 *(Add these later by uploading to `/public/screenshots` and linking below)*
 
-```md
-<image-card alt="Feed" src="/screenshots/feed.png"></image-card>
-<image-card alt="Upload" src="/screenshots/upload.png"></image-card>
-<image-card alt="Profile" src="/screenshots/profile.png"></image-card>
-<image-card alt="Explore" src="/screenshots/explore.png"></image-card>
-```
+![Feed](/screenshots/feed.png)
+![Upload](/screenshots/upload.png)
+![Profile](/screenshots/profile.png)
+![Explore](/screenshots/explore.png)
 
 ---
 
-## Roadmap
+## 🗺️ Roadmap
 
-### Current (v1.0)
+### ✅ Current (v1.0)
 - User auth (Email + Google)
 - Post creation (image + caption)
 - Like & comment system
@@ -179,7 +174,7 @@ Open [http://localhost:3000](http://localhost:3000)
 - Search (users & hashtags)
 - Responsive UI
 
-### Coming Soon (v2.0)
+### 🚀 Coming Soon (v2.0)
 - Short video uploads (Reels)
 - Stories (24-hour posts)
 - Direct messaging
@@ -189,7 +184,7 @@ Open [http://localhost:3000](http://localhost:3000)
 - Post editing & deletion
 - Bookmark saves
 
-### Future Vision
+### 🔮 Future Vision
 - AI caption suggestions
 - Advanced image filters
 - Live streaming
@@ -198,13 +193,13 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
-We open source!
+We ❤️ open source!
 
 **Found a bug?** → [Open an issue](https://github.com/HemVaria/instasphere/issues)  
 **Have an idea?** → [Request a feature](https://github.com/HemVaria/instasphere/issues)  
-**Want to code?** → Fork, branch, PR!
+**Want to code?** → Fork the repo and make a pull request!
 
 ### Steps:
 1. Fork the repo
@@ -214,16 +209,16 @@ We open source!
 
 ---
 
-## Author
+## 👨‍💻 Author
 
 **Hem Varia**  
-Full-Stack Developer | UI/UX Enthusiast | Open Source Lover  
+🚀 Full-Stack Developer | UI/UX Enthusiast | Open Source Lover  
 
-[Portfolio](#) • [GitHub](https://github.com/HemVaria) • [LinkedIn](#) • [Instagram](#)
+[🌐 Portfolio](#) • [🐙 GitHub](https://github.com/HemVaria) • [💼 LinkedIn](#) • [📸 Instagram](#)
 
 ---
 
-## License
+## 📄 License
 
 Distributed under the **MIT License**.  
 See [`LICENSE`](LICENSE) for more information.
@@ -231,5 +226,4 @@ See [`LICENSE`](LICENSE) for more information.
 ---
 
 **Instasphere** — *Where every pixel tells a story.*  
-Made with coffee, moon, and a passion for beautiful code.
-```
+Made with ☕, 🌙, and a passion for beautiful code.
