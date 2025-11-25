@@ -133,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email: email.trim(),
         password,
         options: {
-          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}` : undefined,
+          emailRedirectTo: typeof window !== 'undefined' ? `${window.location.origin}/api/auth/callback` : undefined,
           data: {
             name: name.trim(),
             display_name: name.trim(),
