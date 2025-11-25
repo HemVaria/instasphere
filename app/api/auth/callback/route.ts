@@ -14,7 +14,8 @@ export async function GET(request: NextRequest) {
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
     if (!url || !key) {
-      return NextResponse.redirect(`${origin}?error=missing_config`)
+      console.error("Auth callback: Missing Supabase configuration")
+      return NextResponse.redirect(`${origin}?error=configuration_error`)
     }
 
     const supabase = createServerClient(url, key, {
@@ -42,8 +43,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${origin}${next}`)
     }
 
-    console.error("Auth callback error:", error)
-    return NextResponse.redirect(`${origin}?error=auth_callback_error`)
+    console.error("Auth callback error:", error.message || error)
+    return NextResponse.redirect(`${origin}?error=email_verification_failed`)
   }
 
   // URL to redirect to after sign up process completes
