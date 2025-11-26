@@ -12,8 +12,11 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>
   signUp: (email: string, password: string, name: string) => Promise<void>
   signInWithGoogle: () => Promise<void>
+  resetPasswordForEmail: (email: string) => Promise<void>
+  updatePassword: (password: string) => Promise<void>
   signOut: () => Promise<void>
   clearError: () => void
+  isPasswordRecovery: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -27,6 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false)
 
   useEffect(() => {
     let mounted = true
@@ -69,10 +73,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Listen for auth changes
         const {
           data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
+        } = supabase.auth.onAuthStateChange((event: string, session: any) => {
           if (!mounted) return
           setUser(session?.user ?? null)
           setError(null)
+
+          if (event === "PASSWORD_RECOVERY") {
+            setIsPasswordRecovery(true)
+          } else if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+            setIsPasswordRecovery(false)
+          }
         })
 
         return subscription
@@ -105,14 +115,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true)
 
       const supabase = createClient()
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       })
 
       if (error) throw new Error(error.message)
 
-      // Supabase will update via onAuthStateChange
+      if (data.session) {
+        setUser(data.session.user)
+      }
     } catch (err: any) {
       if (isNetworkFetchError(err)) throw err
       console.error("Sign in failed:", err)
@@ -142,8 +154,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
 
       if (error) throw new Error(error.message)
-      // Ensure no session is set until email is confirmed
-      setUser(null)
+
+      if (data.session) {
+        setUser(data.session.user)
+      } else {
+        // Ensure no session is set until email is confirmed
+        setUser(null)
+      }
     } catch (err: any) {
       if (isNetworkFetchError(err)) throw err
       console.error("Sign up failed:", err)
@@ -183,6 +200,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const resetPasswordForEmail = async (email: string) => {
+    try {
+      setError(null)
+      setLoading(true)
+      const supabase = createClient()
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}`,
+      })
+      if (error) throw new Error(error.message)
+    } catch (err: any) {
+      if (isNetworkFetchError(err)) throw err
+      console.error("Reset password failed:", err)
+      setError(err.message || "Failed to send reset password email")
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const updatePassword = async (password: string) => {
+    try {
+      setError(null)
+      setLoading(true)
+      const supabase = createClient()
+      const { error } = await supabase.auth.updateUser({ password })
+      if (error) throw new Error(error.message)
+      setIsPasswordRecovery(false)
+    } catch (err: any) {
+      if (isNetworkFetchError(err)) throw err
+      console.error("Update password failed:", err)
+      setError(err.message || "Failed to update password")
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const signOut = async () => {
     try {
       setError(null)
@@ -206,8 +260,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signIn,
         signUp,
         signInWithGoogle,
+        resetPasswordForEmail,
+        updatePassword,
         signOut,
         clearError,
+        isPasswordRecovery,
       }}
     >
       {children}

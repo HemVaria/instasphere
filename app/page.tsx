@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { BackgroundCircles } from "@/components/ui/background-circles"
-import { Auth } from "@/components/ui/auth-form"
+import { Auth, AuthView } from "@/components/ui/auth-form"
 import { SlideZone } from "@/components/slidezone/chat-interface"
 import { ExplorePage } from "@/components/explore/explore-page"
 import { SettingsPage } from "@/components/settings/settings-page"
@@ -17,7 +17,7 @@ type AppView = "landing" | "chat" | "explore" | "settings" | "feed"
 export default function HomePage() {
   const [showAuth, setShowAuth] = useState(false)
   const [currentView, setCurrentView] = useState<AppView>("chat")
-  const { user, loading, error } = useAuth()
+  const { user, loading, error, isPasswordRecovery } = useAuth()
 
   // Check environment variables on mount
   useEffect(() => {
@@ -32,6 +32,13 @@ export default function HomePage() {
       console.log("✅ Supabase environment variables found")
     }
   }, [])
+
+  // Handle password recovery flow
+  useEffect(() => {
+    if (isPasswordRecovery) {
+      setShowAuth(true)
+    }
+  }, [isPasswordRecovery])
 
   if (loading) {
     return (
@@ -96,7 +103,10 @@ export default function HomePage() {
                   exit={{ scale: 0.9, opacity: 0 }}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <Auth onClose={() => setShowAuth(false)} />
+                  <Auth
+                    onClose={() => setShowAuth(false)}
+                    initialView={isPasswordRecovery ? AuthView.UPDATE_PASSWORD : AuthView.SIGN_IN}
+                  />
                 </motion.div>
               </motion.div>
             )}

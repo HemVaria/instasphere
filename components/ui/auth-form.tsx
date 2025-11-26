@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { AnimatePresence, motion } from "framer-motion"
-import { ArrowLeft, Eye, EyeOff, Loader2, MailCheck, X, Database, AlertCircle } from "lucide-react"
+import { ArrowLeft, Eye, EyeOff, Loader2, MailCheck, X, Database, AlertCircle, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -20,6 +20,7 @@ enum AuthView {
   SIGN_UP = "sign-up",
   FORGOT_PASSWORD = "forgot-password",
   RESET_SUCCESS = "reset-success",
+  UPDATE_PASSWORD = "update-password",
 }
 
 interface AuthState {
@@ -41,23 +42,35 @@ const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  terms: z.literal(true, { errorMap: () => ({ message: "You must agree to the terms" }) }),
+  terms: z.boolean().refine((val) => val === true, {
+    message: "You must agree to the terms",
+  }),
 })
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Invalid email address"),
 })
 
+const updatePasswordSchema = z.object({
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+})
+
 type SignInFormValues = z.infer<typeof signInSchema>
 type SignUpFormValues = z.infer<typeof signUpSchema>
 type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>
+type UpdatePasswordFormValues = z.infer<typeof updatePasswordSchema>
 
 interface AuthProps {
   onClose: () => void
+  initialView?: AuthView
 }
 
-function Auth({ onClose }: AuthProps) {
-  const [state, setState] = React.useState<AuthState>({ view: AuthView.SIGN_IN })
+function Auth({ onClose, initialView = AuthView.SIGN_IN }: AuthProps) {
+  const [state, setState] = React.useState<AuthState>({ view: initialView })
 
   const setView = React.useCallback((view: AuthView) => {
     setState((prev) => ({ ...prev, view }))
@@ -150,6 +163,9 @@ function Auth({ onClose }: AuthProps) {
             )}
             {state.view === AuthView.RESET_SUCCESS && (
               <AuthResetSuccess key="reset-success" onSignIn={() => setView(AuthView.SIGN_IN)} />
+            )}
+            {state.view === AuthView.UPDATE_PASSWORD && (
+              <AuthUpdatePassword key="update-password" onSignIn={() => setView(AuthView.SIGN_IN)} />
             )}
           </AnimatePresence>
         </div>
@@ -545,6 +561,7 @@ function AuthForgotPassword({
     showPassword: false,
   })
 
+  const { resetPasswordForEmail } = useAuth()
   const {
     register,
     handleSubmit,
@@ -557,10 +574,10 @@ function AuthForgotPassword({
   const onSubmit = async (data: ForgotPasswordFormValues) => {
     setFormState((prev) => ({ ...prev, isLoading: true, error: null }))
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await resetPasswordForEmail(data.email)
       onSuccess()
-    } catch {
-      setFormState((prev) => ({ ...prev, error: "An unexpected error occurred" }))
+    } catch (error: any) {
+      setFormState((prev) => ({ ...prev, error: error.message || "An unexpected error occurred" }))
     } finally {
       setFormState((prev) => ({ ...prev, isLoading: false }))
     }
@@ -655,4 +672,107 @@ function AuthResetSuccess({ onSignIn }: { onSignIn: () => void }) {
   )
 }
 
-export { Auth }
+export { Auth, AuthView }
+
+function AuthUpdatePassword({ onSignIn }: { onSignIn: () => void }) {
+  const [formState, setFormState] = React.useState<FormState>({
+    isLoading: false,
+    error: null,
+    showPassword: false,
+  })
+
+  const { updatePassword } = useAuth()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UpdatePasswordFormValues>({
+    resolver: zodResolver(updatePasswordSchema),
+    defaultValues: { password: "", confirmPassword: "" },
+  })
+
+  const onSubmit = async (data: UpdatePasswordFormValues) => {
+    setFormState((prev) => ({ ...prev, isLoading: true, error: null }))
+    try {
+      await updatePassword(data.password)
+      onSignIn()
+    } catch (error: any) {
+      setFormState((prev) => ({ ...prev, error: error.message || "Failed to update password" }))
+    } finally {
+      setFormState((prev) => ({ ...prev, isLoading: false }))
+    }
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="p-8"
+    >
+      <div className="mb-8 text-center">
+        <div className="flex justify-center mb-4">
+          <div className="p-3 rounded-full bg-primary/10">
+            <Lock className="h-6 w-6 text-primary" />
+          </div>
+        </div>
+        <h1 className="text-3xl font-semibold text-foreground">Update password</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Enter your new password below</p>
+      </div>
+
+      <AuthError message={formState.error} />
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="password">New Password</Label>
+          <div className="relative">
+            <Input
+              id="password"
+              type={formState.showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              disabled={formState.isLoading}
+              className={cn(errors.password && "border-destructive")}
+              {...register("password")}
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-full"
+              onClick={() => setFormState((prev) => ({ ...prev, showPassword: !prev.showPassword }))}
+              disabled={formState.isLoading}
+            >
+              {formState.showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </Button>
+          </div>
+          {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="••••••••"
+            disabled={formState.isLoading}
+            className={cn(errors.confirmPassword && "border-destructive")}
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword.message}</p>}
+        </div>
+
+        <Button type="submit" className="w-full" disabled={formState.isLoading}>
+          {formState.isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Updating...
+            </>
+          ) : (
+            "Update password"
+          )}
+        </Button>
+      </form>
+    </motion.div>
+  )
+}
